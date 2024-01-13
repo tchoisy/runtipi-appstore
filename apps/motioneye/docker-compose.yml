@@ -1,0 +1,40 @@
+version: "3.7"
+services:
+  motioneye:
+    container_name: motioneye
+    image: "ccrisan/motioneye:master-armhf"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/motioneye:/etc/motioneye
+      - ${APP_DATA_DIR}:/var/lib/motioneye
+    ports:
+      - ${APP_PORT}:8765
+    restart: always
+    privileged: true
+    networks:
+      - tipi_main_network
+    labels:
+      # Main
+      traefik.enable: true
+      traefik.http.middlewares.motioneye-web-redirect.redirectscheme.scheme: https
+      traefik.http.services.motioneye.loadbalancer.server.port: 8083
+      # Web
+      traefik.http.routers.motioneye-insecure.rule: Host(`${APP_DOMAIN}`)
+      traefik.http.routers.motioneye-insecure.entrypoints: web
+      traefik.http.routers.motioneye-insecure.service: motioneye
+      traefik.http.routers.motioneye-insecure.middlewares: motioneye-web-redirect
+      # Websecure
+      traefik.http.routers.motioneye.rule: Host(`${APP_DOMAIN}`)
+      traefik.http.routers.motioneye.entrypoints: websecure
+      traefik.http.routers.motioneye.service: motioneye
+      traefik.http.routers.motioneye.tls.certresolver: myresolver
+      # Local domain
+      traefik.http.routers.motioneye-local-insecure.rule: Host(`motioneye.${LOCAL_DOMAIN}`)
+      traefik.http.routers.motioneye-local-insecure.entrypoints: web
+      traefik.http.routers.motioneye-local-insecure.service: motioneye
+      traefik.http.routers.motioneye-local-insecure.middlewares: motioneye-web-redirect
+      # Local domain secure
+      traefik.http.routers.motioneye-local.rule: Host(`motioneye.${LOCAL_DOMAIN}`)
+      traefik.http.routers.motioneye-local.entrypoints: websecure
+      traefik.http.routers.motioneye-local.service: motioneye
+      traefik.http.routers.motioneye-local.tls: true

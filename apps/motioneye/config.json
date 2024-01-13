@@ -1,0 +1,19 @@
+{
+  "$schema": "../schema.json",
+  "name": "MotionEye",
+  "available": true,
+  "exposable": true,
+  "port": 8765,
+  "tipi_version": 7,
+  "version": "0.0.1",
+  "id": "motioneye",
+  "categories": [
+    "security"
+  ],
+  "description": "MotionEye",
+  "short_desc": "MotionEye",
+  "author": "https://github.com/motioneye-project",
+  "source": "https://github.com/motioneye-project/motioneye",
+  "form_fields": [],
+  "supported_architectures": ["arm64", "amd64"]
+}
